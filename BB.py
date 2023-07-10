@@ -10,10 +10,10 @@ root = customtkinter.CTk()
 root.geometry("350x700")
 root.title("Stand Alone GUI")
 
+arduino = serial.Serial('COM3', 115200, timeout=1)
 
 def voltage():
     print("Graph is live")
-    arduino = serial.Serial('COM22', 115200, timeout=1)
     data = np.array([])
 
     while True:
@@ -31,7 +31,6 @@ def voltage():
 
 def position():
     print("Graph is live")
-    arduino = serial.Serial('COM22', 115200, timeout=1)
     data = np.array([])
 
     while True:
@@ -41,16 +40,12 @@ def position():
         analog_value = (1024 * b) / 5
         data = np.append(data, analog_value)
 
-
         plt.cla()
         plt.plot(data)
         plt.title("Position/Time")
         plt.xlabel("Time")
         plt.ylabel("Analog Value")
         plt.pause(0.01)
-
-def reset():
-    arduino = serial.Serial('COM22', 115200, timeout=1)
 
 def stop():
     print("Terminating...")
@@ -142,7 +137,7 @@ button= customtkinter.CTkButton(master=frame,text="Position/Time Graph",command=
 button.pack(pady=12,padx=10)
 button.place(x=30,y=590)
 
-button= customtkinter.CTkButton(master=frame,text="Stop",command=reset)
+button= customtkinter.CTkButton(master=frame,text="Stop",command=stop)
 button.pack(pady=12,padx=10)
 button.place(x=30,y=620)
 
