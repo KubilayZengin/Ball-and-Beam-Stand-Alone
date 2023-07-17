@@ -22,7 +22,7 @@ root.geometry("500x750")
 root.title("Stand Alone GUI")
 
 # Initialize the serial communication between Arduino Mega 2560 and Python
-arduino = serial.Serial('COM4', 115200, timeout=1)
+arduino = serial.Serial('COM24', 115200, timeout=1)
 
 
 # Real time data graph plotting
@@ -144,17 +144,17 @@ button.place(x=250, y=210)
 
 entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Amplitude", font=Font_tuple_3)
 entry1.pack(pady=12, padx=10)
-entry1.place(x=125, y=300)
+entry1.place(x=175, y=300)
 
 entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Frequency", font=Font_tuple_3)
 entry2.pack(pady=12, padx=10)
-entry2.place(x=125, y=340)
+entry2.place(x=175, y=340)
 
-label = customtkinter.CTkLabel(master=frame, text="Amplitude:", font=Font_tuple_3, text_color="white")
+label = customtkinter.CTkLabel(master=frame, text="Amplitude (mm):", font=Font_tuple_3, text_color="white")
 label.pack(pady=12, padx=10)
 label.place(x=50, y=300)
 
-label = customtkinter.CTkLabel(master=frame, text="Frequency:", font=Font_tuple_3, text_color="white")
+label = customtkinter.CTkLabel(master=frame, text="Frequency (hertz):", font=Font_tuple_3, text_color="white")
 label.pack(pady=12, padx=10)
 label.place(x=50, y=340)
 
