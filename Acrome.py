@@ -22,18 +22,20 @@ root.geometry("500x750")
 root.title("Stand Alone GUI")
 
 # Initialize the serial communication between Arduino Mega 2560 and Python
-arduino = serial.Serial('COM24', 115200, timeout=1)
+arduino = serial.Serial('COM24', 9600, timeout=1)
 
 
 # Real time data graph plotting
 def start():
-    print("Graph is live")
     # Add previous data to array
     data = np.array([])
     # Add previous data to array
     data2 = np.array([])
+    # Set figure size
+    plt.rcParams["figure.figsize"] = (8, 7)
     # Create a subplot with size of 2x1
     plt.subplots(2, 1)
+
     while True:
         # Read serial data
         a = arduino.readline()
@@ -55,7 +57,7 @@ def start():
         plt.cla()
         plt.plot(data2)
         plt.title("Position vs Time")
-        plt.xlabel("Time (s)")
+        plt.xlabel("Time")
         plt.ylabel("Position (mm)")
         plt.pause(0.01)
 
