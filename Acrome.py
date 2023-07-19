@@ -7,6 +7,7 @@ import customtkinter  # pip install customtkinter
 import serial  # pip install serial
 import numpy as np  # pip install numpy
 import matplotlib.pyplot as plt  # pip install matplotlib
+from PIL import Image  # pip install pillow
 
 # Set GUI color # Available parameters "light", "dark", "system"
 customtkinter.set_appearance_mode("dark")
@@ -117,12 +118,14 @@ frame = customtkinter.CTkFrame(master=root)
 frame.pack(pady=20, padx=60, fill="both", expand=True)
 
 # Set different types of font size
-Font_tuple = ("Roboto", 20, "bold")
+Font_tuple = ("Roboto", 25, "bold")
 Font_tuple_2 = ("Roboto", 16)
 Font_tuple_3 = ("Roboto", 14)
 
 # All necessary items in the GUI
-label = customtkinter.CTkLabel(master=frame, text="Acrome Robotics", font=Font_tuple, text_color="red")
+acrome_png = customtkinter.CTkImage(dark_image=Image.open("acrome.png"), size=(300, 75))
+
+label = customtkinter.CTkLabel(master=frame, text="", image=acrome_png)
 label.pack(pady=12, padx=10)
 
 label = customtkinter.CTkLabel(master=frame, text="Ball and Beam ", font=Font_tuple, text_color="white")
@@ -204,5 +207,19 @@ button = customtkinter.CTkButton(master=frame, text="Stop", command=stop, width=
 button.pack(pady=12, padx=10)
 button.place(x=115, y=650)
 
+
+# Starting GUI from a specific position
+def center_window_position(width=500, height=750):
+    # Get screen width and height
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # Calculate position x and y coordinates
+    x = (screen_width / 2) - (width / 2)
+    y = (screen_height / 2) - (height / 2)
+    root.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+
+center_window_position()
 # Activate the GUI
 root.mainloop()
