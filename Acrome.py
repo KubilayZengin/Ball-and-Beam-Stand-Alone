@@ -22,12 +22,11 @@ root.geometry("500x750")
 # Set the title of the GUI
 root.title("Stand Alone GUI")
 
-# Initialize the serial communication between Arduino Mega 2560 and Python
-arduino = serial.Serial('COM24', 9600, timeout=1)
-
 
 # Real time data graph plotting
 def start():
+    # Initialize the serial communication between Arduino Mega 2560 and Python
+    arduino = serial.Serial('COM24', 9600, timeout=1)
     # Add previous data to array
     data = np.array([])
     # Add previous data to array
