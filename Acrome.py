@@ -36,7 +36,7 @@ def start():
     plt.rcParams["figure.figsize"] = (8, 7)
     # Create a subplot with size of 2x1
     fig, ax = plt.subplots(2, 1)
-    set_figure_position(fig, 850, 165)
+    set_plot_position(fig, 850, 165)
 
     while True:
         # Read serial data
@@ -59,7 +59,7 @@ def start():
         plt.cla()
         plt.plot(data2)
         plt.title("Position vs Time")
-        plt.xlabel("Time")
+        plt.xlabel("Sample")
         plt.ylabel("Position (mm)")
         plt.pause(0.01)
 
@@ -121,8 +121,8 @@ frame.pack(pady=20, padx=60, fill="both", expand=True)
 # Set different types of font size
 Font_tuple = ("Roboto", 25, "bold")
 Font_tuple_2 = ("Roboto", 16)
-Font_tuple_2_bold = ("Roboto", 16, "bold")
 Font_tuple_3 = ("Roboto", 14)
+Font_tuple_4 = ("Roboto", 10)
 
 # All necessary items in the GUI
 acrome_png = customtkinter.CTkImage(dark_image=Image.open("images/acrome.png"), size=(300, 75))
@@ -132,77 +132,128 @@ ramp_png = customtkinter.CTkImage(dark_image=Image.open("images/ramp.png"), size
 start_png = customtkinter.CTkImage(dark_image=Image.open("images/start.png"), size=(75, 50))
 stop_png = customtkinter.CTkImage(dark_image=Image.open("images/stop.png"), size=(75, 50))
 
-label = customtkinter.CTkLabel(master=frame, text="", image=acrome_png)
+label = customtkinter.CTkLabel(master=frame,
+                               text="",
+                               image=acrome_png)
 label.pack(pady=12, padx=10)
 
-label = customtkinter.CTkLabel(master=frame, text="Ball and Beam ", font=Font_tuple, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Ball and Beam ",
+                               font=Font_tuple,
+                               text_color="white")
 label.pack(pady=12, padx=10)
 
-label = customtkinter.CTkLabel(master=frame, text="Signal Generator", font=Font_tuple_2, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Signal Generator",
+                               font=Font_tuple_2,
+                               text_color="white")
 label.pack(pady=12, padx=10)
 label.place(x=130, y=170)
 
-button = customtkinter.CTkButton(master=frame, text="", image=step_png, command=step, width=75, height=75)
-button.pack(pady=3, padx=3)
+button = customtkinter.CTkButton(master=frame,
+                                 text="",
+                                 image=step_png,
+                                 command=step,
+                                 width=75,
+                                 height=75,
+                                 fg_color="white")
+button.pack(pady=12, padx=10)
 button.place(x=50, y=210)
 
-button = customtkinter.CTkButton(master=frame, text="", image=sin_png, command=sin, width=75, height=75)
+button = customtkinter.CTkButton(master=frame,
+                                 text="",
+                                 image=sin_png,
+                                 command=sin,
+                                 width=75,
+                                 height=75,
+                                 fg_color="white")
 button.pack(pady=12, padx=10)
 button.place(x=150, y=210)
 
-button = customtkinter.CTkButton(master=frame, text="", image=ramp_png, command=sin, width=75, height=75)
+button = customtkinter.CTkButton(master=frame,
+                                 text="",
+                                 text_color="black",
+                                 image=ramp_png,
+                                 command=sin,
+                                 width=75,
+                                 height=75,
+                                 fg_color="white")
 button.pack(pady=12, padx=10)
 button.place(x=250, y=210)
 
-entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Amplitude", font=Font_tuple_3)
+entry1 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Amplitude",
+                                font=Font_tuple_3)
 entry1.pack(pady=12, padx=10)
 entry1.place(x=175, y=300)
 
-entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Frequency", font=Font_tuple_3)
+entry2 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Frequency",
+                                font=Font_tuple_3)
 entry2.pack(pady=12, padx=10)
 entry2.place(x=175, y=340)
 
-label = customtkinter.CTkLabel(master=frame, text="Amplitude (mm):", font=Font_tuple_3, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Amplitude (mm):",
+                               font=Font_tuple_3,
+                               text_color="white")
 label.pack(pady=12, padx=10)
 label.place(x=50, y=300)
 
-label = customtkinter.CTkLabel(master=frame, text="Frequency (hertz):", font=Font_tuple_3, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Frequency (Hz):",
+                               font=Font_tuple_3,
+                               text_color="white")
 label.pack(pady=12, padx=10)
 label.place(x=50, y=340)
 
-label = customtkinter.CTkLabel(master=frame, text="Control Parameters", font=Font_tuple_2, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Velocity Control",
+                               font=Font_tuple_2,
+                               text_color="white")
 label.pack(pady=12, padx=10)
-label.place(x=115, y=390)
+label.place(x=45, y=430)
 
-label = customtkinter.CTkLabel(master=frame, text="Velocity", font=Font_tuple_2, text_color="white")
+label = customtkinter.CTkLabel(master=frame,
+                               text="Position Control",
+                               font=Font_tuple_2,
+                               text_color="white")
 label.pack(pady=12, padx=10)
-label.place(x=80, y=430)
+label.place(x=215, y=430)
 
-label = customtkinter.CTkLabel(master=frame, text="Position", font=Font_tuple_2, text_color="white")
-label.pack(pady=12, padx=10)
-label.place(x=245, y=430)
-
-entry4 = customtkinter.CTkEntry(master=frame, placeholder_text="Kp", font=Font_tuple_3)
+entry4 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Kp",
+                                font=Font_tuple_3)
 entry4.pack(pady=12, padx=10)
 entry4.place(x=30, y=460)
 
-entry5 = customtkinter.CTkEntry(master=frame, placeholder_text="Ki", font=Font_tuple_3)
+entry5 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Ki",
+                                font=Font_tuple_3)
 entry5.pack(pady=12, padx=10)
 entry5.place(x=30, y=500)
 
-entry6 = customtkinter.CTkEntry(master=frame, placeholder_text="Kd", font=Font_tuple_3)
+entry6 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Kd",
+                                font=Font_tuple_3)
 entry6.pack(pady=12, padx=10)
 entry6.place(x=30, y=540)
 
-entry7 = customtkinter.CTkEntry(master=frame, placeholder_text="Kp", font=Font_tuple_3)
+entry7 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Kp",
+                                font=Font_tuple_3)
 entry7.pack(pady=12, padx=10)
 entry7.place(x=200, y=460)
 
-entry8 = customtkinter.CTkEntry(master=frame, placeholder_text="Ki", font=Font_tuple_3)
+entry8 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Ki",
+                                font=Font_tuple_3)
 entry8.pack(pady=12, padx=10)
 entry8.place(x=200, y=500)
 
-entry9 = customtkinter.CTkEntry(master=frame, placeholder_text="Kd", font=Font_tuple_3)
+entry9 = customtkinter.CTkEntry(master=frame,
+                                placeholder_text="Kd",
+                                font=Font_tuple_3)
 entry9.pack(pady=12, padx=10)
 entry9.place(x=200, y=540)
 
@@ -227,7 +278,7 @@ button.place(x=125, y=650)
 
 
 # Set GUI starting coordinates
-def set_window_position(width=500, height=750):
+def set_gui_position(width=500, height=750):
     # Get screen width and height
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -239,7 +290,7 @@ def set_window_position(width=500, height=750):
 
 
 # Set plot starting coordinates
-def set_figure_position(f, x, y):
+def set_plot_position(f, x, y):
     # Move figure's upper left corner to pixel (x, y)
     backend = plt.get_backend()
     if backend == 'TkAgg':
@@ -250,6 +301,6 @@ def set_figure_position(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-set_window_position()
+set_gui_position()
 # Activate the GUI
 root.mainloop()
