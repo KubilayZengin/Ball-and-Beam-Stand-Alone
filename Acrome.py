@@ -35,7 +35,8 @@ def start():
     # Set figure size
     plt.rcParams["figure.figsize"] = (8, 7)
     # Create a subplot with size of 2x1
-    plt.subplots(2, 1)
+    fig, ax = plt.subplots(2, 1)
+    set_figure_position(fig, 850, 165)
 
     while True:
         # Read serial data
@@ -120,10 +121,16 @@ frame.pack(pady=20, padx=60, fill="both", expand=True)
 # Set different types of font size
 Font_tuple = ("Roboto", 25, "bold")
 Font_tuple_2 = ("Roboto", 16)
+Font_tuple_2_bold = ("Roboto", 16, "bold")
 Font_tuple_3 = ("Roboto", 14)
 
 # All necessary items in the GUI
-acrome_png = customtkinter.CTkImage(dark_image=Image.open("acrome.png"), size=(300, 75))
+acrome_png = customtkinter.CTkImage(dark_image=Image.open("images/acrome.png"), size=(300, 75))
+step_png = customtkinter.CTkImage(dark_image=Image.open("images/step.png"), size=(50, 50))
+sin_png = customtkinter.CTkImage(dark_image=Image.open("images/sin.png"), size=(50, 50))
+ramp_png = customtkinter.CTkImage(dark_image=Image.open("images/ramp.png"), size=(50, 50))
+start_png = customtkinter.CTkImage(dark_image=Image.open("images/start.png"), size=(75, 50))
+stop_png = customtkinter.CTkImage(dark_image=Image.open("images/stop.png"), size=(75, 50))
 
 label = customtkinter.CTkLabel(master=frame, text="", image=acrome_png)
 label.pack(pady=12, padx=10)
@@ -135,15 +142,15 @@ label = customtkinter.CTkLabel(master=frame, text="Signal Generator", font=Font_
 label.pack(pady=12, padx=10)
 label.place(x=130, y=170)
 
-button = customtkinter.CTkButton(master=frame, text="Step", command=step, width=75, height=75)
+button = customtkinter.CTkButton(master=frame, text="", image=step_png, command=step, width=75, height=75)
 button.pack(pady=3, padx=3)
 button.place(x=50, y=210)
 
-button = customtkinter.CTkButton(master=frame, text="Sin", command=sin, width=75, height=75)
+button = customtkinter.CTkButton(master=frame, text="", image=sin_png, command=sin, width=75, height=75)
 button.pack(pady=12, padx=10)
 button.place(x=150, y=210)
 
-button = customtkinter.CTkButton(master=frame, text="Ramp", command=sin, width=75, height=75)
+button = customtkinter.CTkButton(master=frame, text="", image=ramp_png, command=sin, width=75, height=75)
 button.pack(pady=12, padx=10)
 button.place(x=250, y=210)
 
@@ -199,17 +206,28 @@ entry9 = customtkinter.CTkEntry(master=frame, placeholder_text="Kd", font=Font_t
 entry9.pack(pady=12, padx=10)
 entry9.place(x=200, y=540)
 
-button = customtkinter.CTkButton(master=frame, text="Start", command=start, width=150, height=50, fg_color="green")
+button = customtkinter.CTkButton(master=frame,
+                                 text="",
+                                 image=start_png,
+                                 command=start,
+                                 width=125,
+                                 height=60,
+                                 fg_color="green")
 button.pack(pady=12, padx=10)
-button.place(x=115, y=590)
+button.place(x=125, y=580)
 
-button = customtkinter.CTkButton(master=frame, text="Stop", command=stop, width=150, height=50, fg_color="red")
+button = customtkinter.CTkButton(master=frame, text="",
+                                 image=stop_png,
+                                 command=stop,
+                                 width=125,
+                                 height=60,
+                                 fg_color="red")
 button.pack(pady=12, padx=10)
-button.place(x=115, y=650)
+button.place(x=125, y=650)
 
 
-# Starting GUI from a specific position
-def center_window_position(width=500, height=750):
+# Set GUI starting coordinates
+def set_window_position(width=500, height=750):
     # Get screen width and height
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -217,9 +235,21 @@ def center_window_position(width=500, height=750):
     # Calculate position x and y coordinates
     x = (screen_width / 2) - (width / 2)
     y = (screen_height / 2) - (height / 2)
-    root.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    root.geometry('%dx%d+%d+%d' % (width, height, x - 400, y))
 
 
-center_window_position()
+# Set plot starting coordinates
+def set_figure_position(f, x, y):
+    # Move figure's upper left corner to pixel (x, y)
+    backend = plt.get_backend()
+    if backend == 'TkAgg':
+        f.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
+    elif backend == 'WXAgg':
+        f.canvas.manager.window.SetPosition((x, y))
+    else:
+        f.canvas.manager.window.move(x, y)
+
+
+set_window_position()
 # Activate the GUI
 root.mainloop()
