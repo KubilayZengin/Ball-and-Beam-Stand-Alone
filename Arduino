@@ -1,0 +1,48 @@
+/******************************************************************************
+SoftPot_and_Servo_Example.ino
+Acrome Ball and Beam Softpot Linear Potentiometer and Servo Motor
+  (https://acrome.net/product/ball-and-beam)
+Kubilay Zengin
+July 18, 2023
+******************************************************************************/
+// Include servo library
+#include <Servo.h>
+
+// Create a servo object called myservo
+Servo myservo;
+
+// Define SoftPot pin as A7
+const int SOFT_POT_PIN = A7; // Pin connected to softpot wiper
+
+void setup() 
+{
+  // Start serial port with 9600 baud rate
+  Serial.begin(9600);
+  
+  // Set SoftPot as input
+  pinMode(SOFT_POT_PIN, INPUT);
+  
+  // Assign servo pin
+  myservo.attach(5);
+}
+
+void loop() 
+{
+  // Read analog value
+  float softPotAnalog = analogRead(SOFT_POT_PIN);
+  
+  // Convert analog 0-1023 value to 0-5
+  float softPotVoltage = softPotAnalog * (4.74 / 951.0);
+  
+  // Convert analog 0-1023 value to 0-180
+  int servoAngle = softPotAnalog * (180 / 980.0);
+  
+  // Write servo angle
+  myservo.write(servoAngle);
+  
+  // Print SoftPot voltage
+  Serial.println(softPotVoltage);
+  
+  // Delay the code for 100 ms
+  delay(100);
+}
