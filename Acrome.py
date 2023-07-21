@@ -44,18 +44,17 @@ except serial.SerialException:
 
 # Real time data graph plotting function
 def start():
-    try:
-        # Add previous data to array
-        data = np.array([])
-        # Add previous data to array
-        data2 = np.array([])
-        # Set figure size
-        plt.rcParams["figure.figsize"] = (8, 7)
-        # Create a subplot with size of 2x1
-        fig, ax = plt.subplots(2, 1)
-        set_plot_position(fig, 850, 145)
-
-        while True:
+    # Add previous data to array
+    data = np.array([])
+    # Add previous data to array
+    data2 = np.array([])
+    # Set figure size
+    plt.rcParams["figure.figsize"] = (8, 7)
+    # Create a subplot with size of 2x1
+    fig, ax = plt.subplots(2, 1)
+    set_plot_position(fig, 850, 145)
+    while True:
+        try:
             # Read serial data
             a = arduino.readline()
             # Decode the given byte data
@@ -79,17 +78,20 @@ def start():
             plt.xlabel("Sample")
             plt.ylabel("Position (mm)")
             plt.pause(0.01)
-
-    except KeyboardInterrupt:
-        # If the user presses Ctrl+F2, stop the program
-        print("Program terminated.")
-    except serial.SerialException:
-        # Handle SerialException error when opening the port
-        print("Error: Unable to open the serial port. Check the port number and connection or restart the program.")
-    except ValueError:
-        # If there's an issue converting data to the appropriate format, handle the error here
-        print("Error: Unable to convert data.")
-        arduino.close()
+        except KeyboardInterrupt:
+            # If the user presses Ctrl+F2, stop the program
+            print("Program terminated.")
+        except serial.SerialException:
+            # Handle SerialException error when opening the port
+            print("Error: Unable to open the serial port. Check the port number and connection or restart the program.")
+        except ValueError:
+            # If there's an issue converting data to the appropriate format, handle the error here
+            print("Error: Unable to convert data.")
+            plt.clf()
+        except NameError:
+            # If there's an issue converting data to the appropriate format, handle the error here
+            print("Error: Unable to detect Arduino.")
+            break
 
 
 # Stop function
