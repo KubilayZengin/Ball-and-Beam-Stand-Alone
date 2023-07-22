@@ -38,7 +38,7 @@ def set_plot_position(f, x, y):
 def set_gui_color(x, y):
     # Available parameters: "light", "dark", "system".
     customtkinter.set_appearance_mode(x)
-    # Available parameters: "blue", "green", "dark-blue".
+
     customtkinter.set_default_color_theme(y)
 
 
@@ -155,12 +155,14 @@ def stop():
 
 try:
     # Call set GUI color function
+    # Available first  parameters: "light", "dark", "system".
+    # Available second parameters: "blue", "green", "dark-blue".
     set_gui_color("dark", "dark-blue")
 
     # Initialize GUI
     root = customtkinter.CTk()
 
-    # Set dimensions of the GUI
+    # Set the dimensions of the GUI
     root.geometry("500x800")
 
     # Set the title of the GUI
@@ -170,13 +172,13 @@ try:
     frame = customtkinter.CTkFrame(master=root)
     frame.pack(pady=20, padx=60, fill="both", expand=True)
 
-    # Set different types of font size
+    # Set different font size types
     Font_tuple = ("Roboto", 25, "bold")
     Font_tuple_2 = ("Roboto", 16)
     Font_tuple_3 = ("Roboto", 14)
     Font_tuple_4 = ("Roboto", 10)
 
-    # All necessary items in the GUI
+    # GUI visual attributes
     acrome_png = customtkinter.CTkImage(dark_image=Image.open("images/acrome.png"), size=(300, 75))
     step_png = customtkinter.CTkImage(dark_image=Image.open("images/step.png"), size=(50, 50))
     sin_png = customtkinter.CTkImage(dark_image=Image.open("images/sin.png"), size=(50, 50))
