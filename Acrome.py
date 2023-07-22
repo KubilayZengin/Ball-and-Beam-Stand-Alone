@@ -34,6 +34,59 @@ def set_plot_position(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
+# Set GUI color function.
+def set_gui_color(x, y):
+    # Available parameters: "light", "dark", "system".
+    customtkinter.set_appearance_mode(x)
+    # Available parameters: "blue", "green", "dark-blue".
+    customtkinter.set_default_color_theme(y)
+
+
+# Step input function
+def step():
+    # Check whether the input is empty
+    if entry1.get() == "":
+        print("Enter a reference value between -200 mm and 200 mm.\n")
+
+    # Set value for amplitude range. For this system, default dimension range is -200-200.
+    elif -200 <= int(entry1.get()) <= 200:
+        amplitude = entry1.get()
+        print("Amplitude value set to:", amplitude, "mm.\n")
+    # Print error message if entered value is not in range
+    else:
+        print("Enter a reference value between -200 mm and 200 mm.\n")
+
+
+# Sin wave input function
+def sin():
+    # Check whether the input is empty
+    if entry1.get() == "":
+        print("Enter a reference value between -200 mm and 200 mm.")
+
+    # Set value for amplitude range. For this system, default dimension range is -200-200.
+    elif -200 <= int(entry1.get()) <= 200:
+
+        amplitude = entry1.get()
+        print("Amplitude value set to:", amplitude, "mm.\n")
+
+    # Print error message if entered value is not in range
+    else:
+        print("Enter a reference value between -200 mm and 200 mm.\n")
+
+    # Check whether the input is empty
+    if entry2.get() == "":
+        print("Enter a reference value between 1 hertz and 1000 hertz.\n")
+
+    # Set value for frequency range. For this system, default dimension range is **-**.
+    elif 1 <= int(entry2.get()) <= 1000:
+        frequency = entry2.get()
+        print("Frequency value set to:", frequency, "hertz.\n")
+
+    # Print error message if entered value is not in range
+    else:
+        print("Enter a reference value between 1 hertz and 1000 hertz.\n")
+
+
 try:
     # Initialize the serial communication between Arduino Mega 2560 and Python.
     arduino = serial.Serial('COM24', 9600, timeout=1)
@@ -100,55 +153,9 @@ def stop():
     exit(0)
 
 
-# Step input function
-def step():
-    # Check whether the input is empty
-    if entry1.get() == "":
-        print("Enter a reference value between -200 mm and 200 mm.\n")
-
-    # Set value for amplitude range. For this system, default dimension range is -200-200.
-    elif -200 <= int(entry1.get()) <= 200:
-        amplitude = entry1.get()
-        print("Amplitude value set to:", amplitude, "mm.\n")
-    # Print error message if entered value is not in range
-    else:
-        print("Enter a reference value between -200 mm and 200 mm.\n")
-
-
-# Sin wave input function
-def sin():
-    # Check whether the input is empty
-    if entry1.get() == "":
-        print("Enter a reference value between -200 mm and 200 mm.")
-
-    # Set value for amplitude range. For this system, default dimension range is -200-200.
-    elif -200 <= int(entry1.get()) <= 200:
-
-        amplitude = entry1.get()
-        print("Amplitude value set to:", amplitude, "mm.\n")
-
-    # Print error message if entered value is not in range
-    else:
-        print("Enter a reference value between -200 mm and 200 mm.\n")
-
-    # Check whether the input is empty
-    if entry2.get() == "":
-        print("Enter a reference value between 1 hertz and 1000 hertz.\n")
-
-    # Set value for frequency range. For this system, default dimension range is **-**.
-    elif 1 <= int(entry2.get()) <= 1000:
-        frequency = entry2.get()
-        print("Frequency value set to:", frequency, "hertz.\n")
-
-    # Print error message if entered value is not in range
-    else:
-        print("Enter a reference value between 1 hertz and 1000 hertz.\n")
-
-
 try:
-    # Set GUI color # Available parameters "light", "dark", "system"
-    customtkinter.set_appearance_mode("dark")
-    customtkinter.set_default_color_theme("dark-blue")
+    # Call set GUI color function
+    set_gui_color("dark", "dark-blue")
 
     # Initialize GUI
     root = customtkinter.CTk()
