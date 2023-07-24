@@ -1,48 +1,36 @@
 /******************************************************************************
-SoftPot_and_Servo_Example.ino
-Acrome Ball and Beam Softpot Linear Potentiometer and Servo Motor
+Ball-and-Beam.ino
+Acrome Ball and Beam Stand Alone Source Code
   (https://acrome.net/product/ball-and-beam)
 Kubilay Zengin
 July 18, 2023
 ******************************************************************************/
-// Include servo library
 #include <Servo.h>
 
-// Create a servo object called myservo
 Servo myservo;
-
-// Define SoftPot pin as A7
-const int SOFT_POT_PIN = A7; // Pin connected to softpot wiper
+const int SOFT_POT_PIN = A7;
 
 void setup() 
 {
-  // Start serial port with 9600 baud rate
   Serial.begin(9600);
-  
-  // Set SoftPot as input
   pinMode(SOFT_POT_PIN, INPUT);
-  
-  // Assign servo pin
   myservo.attach(5);
 }
 
 void loop() 
 {
-  // Read analog value
-  float softPotAnalog = analogRead(SOFT_POT_PIN);
-  
-  // Convert analog 0-1023 value to 0-5
-  float softPotVoltage = softPotAnalog * (4.74 / 951.0);
-  
-  // Convert analog 0-1023 value to 0-180
-  int servoAngle = softPotAnalog * (180 / 980.0);
-  
-  // Write servo angle
-  myservo.write(servoAngle);
-  
-  // Print SoftPot voltage
-  Serial.println(softPotVoltage);
-  
-  // Delay the code for 100 ms
-  delay(100);
+    // Read control signal from Python
+    if (Serial.available() > 0)
+    {
+        String control_signal_str = Serial.readStringUntil('\n');
+        control_signal_str.trim();
+        float control_signal = control_signal_str.toFloat();
+        control_signal = constrain(control_signal, 0, 180); // Constrain the control signal to servo angle range
+        myservo.write(control_signal);
+    }
+
+    float softPotAnalog = analogRead(SOFT_POT_PIN);
+    float softPotVoltage = softPotAnalog * (4.74 / 951.0);
+    Serial.println(softPotVoltage);
+    delay(100);
 }
