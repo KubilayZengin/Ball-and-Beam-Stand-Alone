@@ -17,8 +17,12 @@ arduino = None
 # Detect all available COMs
 com_list = serial.tools.list_ports.comports()
 available_coms = []
-for element in com_list:
-    available_coms.append(element.device)
+if len(com_list) == 0:
+    available_coms.append("None")
+else:
+    for element in com_list:
+        available_coms.append(element.device)
+
 
 # Set different font size types
 Font_tuple_1 = ("Roboto", 24)
