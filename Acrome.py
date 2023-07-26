@@ -42,11 +42,7 @@ class App(customtkinter.CTk):
                                                                            size=(300, 75)))
         self.label_1.pack(padx=10, pady=12)
         self.label_1.place(x=40, y=10)
-        '''
-        self.label_2 = customtkinter.CTkLabel(self.frame, text="Ball and Beam", font=Font_tuple_1, text_color="white")
-        self.label_2.pack(padx=10, pady=12)
-        self.label_2.place(x=75, y=115)
-        '''
+
         self.label_3 = customtkinter.CTkLabel(self.frame, text="Step", font=Font_tuple_3, text_color="white")
         self.label_3.pack(padx=10, pady=12)
         self.label_3.place(x=75, y=186)
@@ -67,8 +63,8 @@ class App(customtkinter.CTk):
         self.label_7.pack(padx=10, pady=12)
         self.label_7.place(x=50, y=300)
 
-        self.label_8 = customtkinter.CTkLabel(self.frame, text="Position\nControl", font=Font_tuple_2,
-                                              text_color="white")
+        self.label_8 = customtkinter.CTkLabel(self.frame, text="Position\nControl",
+                                              font=Font_tuple_2, text_color="white")
         self.label_8.pack(padx=10, pady=12)
         self.label_8.place(x=110, y=410)
 
@@ -77,20 +73,25 @@ class App(customtkinter.CTk):
         self.label_9.pack(padx=10, pady=12)
         self.label_9.place(x=215, y=410)
 
+        self.label_10 = customtkinter.CTkLabel(self.frame, text="Serial Ports", font=Font_tuple_3,
+                                               text_color="white")
+        self.label_10.pack(padx=10, pady=12)
+        self.label_10.place(x=255, y=92)
+
         # Buttons
-        self.button_1 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#E34234",
+        self.button_1 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
                                                 image=customtkinter.CTkImage(dark_image=Image.open("images/step.png"),
                                                                              size=(50, 50)), command=self.step)
         self.button_1.pack(padx=10, pady=12)
         self.button_1.place(x=50, y=210)
 
-        self.button_2 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#E34234",
+        self.button_2 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
                                                 image=customtkinter.CTkImage(dark_image=Image.open("images/sin.png"),
                                                                              size=(50, 50)), command=self.sin)
         self.button_2.pack(padx=10, pady=12)
         self.button_2.place(x=150, y=210)
 
-        self.button_3 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#E34234",
+        self.button_3 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
                                                 image=customtkinter.CTkImage(dark_image=Image.open("images/ramp.png"),
                                                                              size=(50, 50)), command=self.step)
         self.button_3.pack(padx=10, pady=12)
@@ -144,13 +145,14 @@ class App(customtkinter.CTk):
         self.entry_8.place(x=200, y=540)
         # Option menu
         self.com_port_menu = customtkinter.CTkOptionMenu(self.frame, values=available_coms, command=self.set_com,
-                                                         width=80, fg_color="black", bg_color="black",
-                                                         text_color="white", button_color="#C41E3A")
+                                                         width=80, fg_color="black", text_color="white",
+                                                         button_color="#C41E3A", corner_radius=10)
         self.com_port_menu.pack(padx=10, pady=12)
         self.com_port_menu.place(x=250, y=118)
 
     # Set GUI color function.
-    def set_gui_color(self, x, y):
+    @staticmethod
+    def set_gui_color(x, y):
         # Modes: "system" (standard), "dark", "light"
         customtkinter.set_appearance_mode(x)
         # Themes: "blue" (standard), "green", "dark-blue"
@@ -168,7 +170,8 @@ class App(customtkinter.CTk):
         self.geometry('%dx%d+%d+%d' % (width, height, x - 400, y - 50))
 
     # Plot starting coordinates function
-    def set_plot_position(self, f, x, y):
+    @staticmethod
+    def set_plot_position(f, x, y):
         # Move figure's upper left corner to pixel (x, y)
         backend = plt.get_backend()
         if backend == 'TkAgg':
@@ -181,7 +184,7 @@ class App(customtkinter.CTk):
     # Step input function
     def step(self):
         try:
-            if -200 <= int(self.entry_1.get()) <= 200:
+            if -250 <= int(self.entry_1.get()) <= 250:
 
                 amplitude = self.entry_1.get()
                 print("Amplitude value set to:", amplitude, "mm.\n")
@@ -197,7 +200,7 @@ class App(customtkinter.CTk):
     # Sin wave input function
     def sin(self):
         try:
-            if -200 <= int(self.entry_1.get()) <= 200:
+            if -250 <= int(self.entry_1.get()) <= 250:
 
                 amplitude = self.entry_1.get()
                 print("Amplitude value set to:", amplitude, "mm.")
@@ -220,21 +223,21 @@ class App(customtkinter.CTk):
             print("Enter a frequency value between 1 hertz and 1000 hertz.\n")
 
     # Stop function
-    def stop(self):
+    @staticmethod
+    def stop():
         print("Program terminated.")
         exit(0)
 
-    def set_com(self, com_port: str):
-        try:
-            # Initialize the serial communication between Arduino Mega 2560 and Python.
-            arduino = serial.Serial(com_port, 9600, timeout=1)
-            print("Successfully connected to", com_port)
-        except serial.SerialException:
-            # Handle SerialException error when opening the port
-            print("No arduino detected at", com_port)
+    @staticmethod
+    def set_com(com_port: str):
+        # Initialize the serial communication between Arduino and Python.
+        arduino = serial.Serial(com_port, 9600, timeout=1)
+        arduino.write(f"{85}\n".encode())
+        print("Connected to", com_port)
 
-
-    def set_servo_angle(self,angle):
+    @staticmethod
+    def set_servo_angle(angle):
+        global arduino
         # Convert the angle to a string and send it to Arduino
         arduino.write(f"{angle}\n".encode())
 
