@@ -19,13 +19,14 @@ com_list = serial.tools.list_ports.comports()
 available_coms = []
 if len(com_list) == 0:
     available_coms.append("None")
+    print("No available COM port detected.")
 else:
     for element in com_list:
         available_coms.append(element.device)
 
 
 # Set different font size types
-Font_tuple_1 = ("Roboto", 24)
+Font_tuple_1 = ("Roboto", 18)
 Font_tuple_2 = ("Roboto", 16)
 Font_tuple_3 = ("Roboto", 14)
 Font_tuple_4 = ("Roboto", 12)
@@ -238,6 +239,7 @@ class App(customtkinter.CTk):
         arduino = serial.Serial(com_port, 9600, timeout=1)
         arduino.write(f"{85}\n".encode())
         print("Connected to", com_port)
+        return arduino
 
     @staticmethod
     def set_servo_angle(angle):
@@ -320,3 +322,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # If the user presses Ctrl+F2, stop the program
         print("Program terminated.")
+        
