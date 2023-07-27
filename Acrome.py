@@ -101,19 +101,19 @@ class App(customtkinter.CTk):
         self.button_3.pack(padx=10, pady=12)
         self.button_3.place(x=250, y=210)
 
-        self.start_button = customtkinter.CTkButton(self.frame, text="", width=80, height=60, fg_color="#4CBB17",
-                                                    image=customtkinter.CTkImage(
-                                                        dark_image=Image.open("images/start.png"),
-                                                        size=(70, 55)), corner_radius=100, command=self.start)
+        self.start_button = customtkinter.CTkButton(self.frame, text="", width=1, height=1, fg_color="#2B2B2B",
+                                                    bg_color="#2B2B2B", command=self.start, border_width=0,
+                                                    image=customtkinter.CTkImage
+                                                    (dark_image=Image.open("images/start.png"), size=(120, 90)))
         self.start_button.pack(padx=10, pady=12)
-        self.start_button.place(x=116, y=600)
+        self.start_button.place(x=130, y=575)
 
-        self.stop_button = customtkinter.CTkButton(self.frame, text="", width=80, height=60, fg_color="#FF2400",
-                                                   image=customtkinter.CTkImage(
-                                                       dark_image=Image.open("images/stop.png"),
-                                                       size=(70, 55)), corner_radius=100, command=self.stop)
+        self.stop_button = customtkinter.CTkButton(self.frame, text="", width=1, height=1, fg_color="#2B2B2B",
+                                                   bg_color="#2B2B2B", command=self.stop,border_width=0,
+                                                   image=customtkinter.CTkImage
+                                                       (dark_image=Image.open("images/stop.png"),size=(120, 90)))
         self.stop_button.pack(padx=10, pady=12)
-        self.stop_button.place(x=116, y=680)
+        self.stop_button.place(x=130, y=670)
 
         # Entries
         self.entry_1 = customtkinter.CTkEntry(self.frame, placeholder_text="")
