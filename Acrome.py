@@ -24,7 +24,6 @@ else:
     for element in com_list:
         available_coms.append(element.device)
 
-
 # Set different font size types
 Font_tuple_1 = ("Roboto", 18)
 Font_tuple_2 = ("Roboto", 16)
@@ -102,7 +101,7 @@ class App(customtkinter.CTk):
         self.button_3.pack(padx=10, pady=12)
         self.button_3.place(x=250, y=210)
 
-        self.start_button = customtkinter.CTkButton(self.frame, text="", width=80, height=60, fg_color="green",
+        self.start_button = customtkinter.CTkButton(self.frame, text="", width=80, height=60, fg_color="#4CBB17",
                                                     image=customtkinter.CTkImage(
                                                         dark_image=Image.open("images/start.png"),
                                                         size=(70, 55)), corner_radius=100, command=self.start)
@@ -236,10 +235,13 @@ class App(customtkinter.CTk):
     @staticmethod
     def set_com(com_port: str):
         # Initialize the serial communication between Arduino and Python.
-        arduino = serial.Serial(com_port, 9600, timeout=1)
-        arduino.write(f"{85}\n".encode())
-        print("Connected to", com_port)
-        return arduino
+        try:
+            arduino = serial.Serial(com_port, 9600, timeout=1)
+            arduino.write(f"{85}\n".encode())
+            print("Connected to", com_port)
+            return arduino
+        except serial.SerialException:
+            print("Unable to connect.")
 
     @staticmethod
     def set_servo_angle(angle):
@@ -322,4 +324,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # If the user presses Ctrl+F2, stop the program
         print("Program terminated.")
-        
