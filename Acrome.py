@@ -1,5 +1,6 @@
 """
 This source code is designed for Ball and Beam system by Acrome Robotics
+This source code has written in Python 3.7.4
 Author: Kubilay ZENGİN
 """
 # Library installation commands given below
@@ -71,17 +72,22 @@ class App(customtkinter.CTk):
         self.label_8 = customtkinter.CTkLabel(self.frame, text="Position\nControl",
                                               font=Font_tuple_2, text_color="white")
         self.label_8.pack(padx=10, pady=12)
-        self.label_8.place(x=110, y=410)
+        self.label_8.place(x=60, y=410)
 
         self.label_9 = customtkinter.CTkLabel(self.frame, text="Velocity\nControl", font=Font_tuple_2,
                                               text_color="white")
         self.label_9.pack(padx=10, pady=12)
-        self.label_9.place(x=215, y=410)
+        self.label_9.place(x=150, y=410)
 
         self.label_10 = customtkinter.CTkLabel(self.frame, text="Serial Ports", font=Font_tuple_3,
                                                text_color="white")
         self.label_10.pack(padx=10, pady=12)
-        self.label_10.place(x=255, y=92)
+        self.label_10.place(x=245, y=510)
+
+        self.label_11 = customtkinter.CTkLabel(self.frame, text="Sample Size", font=Font_tuple_2,
+                                               text_color="white")
+        self.label_11.pack(padx=10, pady=12)
+        self.label_11.place(x=235, y=430)
 
         # Buttons
         self.button_1 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
@@ -125,35 +131,39 @@ class App(customtkinter.CTk):
         self.entry_2.pack(padx=10, pady=12)
         self.entry_2.place(x=185, y=340)
 
-        self.entry_3 = customtkinter.CTkEntry(self.frame, placeholder_text="Kp", width=80, font=Font_tuple_3)
+        self.entry_3 = customtkinter.CTkEntry(self.frame, placeholder_text="Kp", width=50, font=Font_tuple_3)
         self.entry_3.pack(padx=10, pady=12)
-        self.entry_3.place(x=100, y=460)
+        self.entry_3.place(x=65, y=460)
 
-        self.entry_4 = customtkinter.CTkEntry(self.frame, placeholder_text="Ki", width=80, font=Font_tuple_3)
+        self.entry_4 = customtkinter.CTkEntry(self.frame, placeholder_text="Ki", width=50, font=Font_tuple_3)
         self.entry_4.pack(padx=10, pady=12)
-        self.entry_4.place(x=100, y=500)
+        self.entry_4.place(x=65, y=500)
 
-        self.entry_5 = customtkinter.CTkEntry(self.frame, placeholder_text="Kd", width=80, font=Font_tuple_3)
+        self.entry_5 = customtkinter.CTkEntry(self.frame, placeholder_text="Kd", width=50, font=Font_tuple_3)
         self.entry_5.pack(padx=10, pady=12)
-        self.entry_5.place(x=100, y=540)
+        self.entry_5.place(x=65, y=540)
 
-        self.entry_6 = customtkinter.CTkEntry(self.frame, placeholder_text="Kp", width=80, font=Font_tuple_3)
+        self.entry_6 = customtkinter.CTkEntry(self.frame, placeholder_text="Kp", width=50, font=Font_tuple_3)
         self.entry_6.pack(padx=10, pady=12)
-        self.entry_6.place(x=200, y=460)
+        self.entry_6.place(x=150, y=460)
 
-        self.entry_7 = customtkinter.CTkEntry(self.frame, placeholder_text="Ki", width=80, font=Font_tuple_3)
+        self.entry_7 = customtkinter.CTkEntry(self.frame, placeholder_text="Ki", width=50, font=Font_tuple_3)
         self.entry_7.pack(padx=10, pady=12)
-        self.entry_7.place(x=200, y=500)
+        self.entry_7.place(x=150, y=500)
 
-        self.entry_8 = customtkinter.CTkEntry(self.frame, placeholder_text="Kd", width=80, font=Font_tuple_3)
+        self.entry_8 = customtkinter.CTkEntry(self.frame, placeholder_text="Kd", width=50, font=Font_tuple_3)
         self.entry_8.pack(padx=10, pady=12)
-        self.entry_8.place(x=200, y=540)
+        self.entry_8.place(x=150, y=540)
+
+        self.entry_9 = customtkinter.CTkEntry(self.frame, placeholder_text="", width=100, font=Font_tuple_3)
+        self.entry_9.pack(padx=10, pady=12)
+        self.entry_9.place(x=230, y=460)
         # Option menu
         self.com_port_menu = customtkinter.CTkOptionMenu(self.frame, values=available_coms, command=self.set_com,
                                                          width=80, fg_color="black", text_color="white",
                                                          button_color="#C41E3A", corner_radius=10)
         self.com_port_menu.pack(padx=10, pady=12)
-        self.com_port_menu.place(x=250, y=118)
+        self.com_port_menu.place(x=240, y=540)
 
     # Set GUI color function.
     @staticmethod
@@ -272,9 +282,14 @@ class App(customtkinter.CTk):
         # Call set_plot_position function
         self.set_plot_position(fig, 850, 145)
         i = 0
-        while True:
-            try:
+        k = True
+        try:
+            n = int(self.entry_9.get())
+        except ValueError:
+            print("Enter integer value.")
 
+        while k:
+            try:
                 # Read serial data
                 byte_data = self.arduino.readline()
                 # Decode byte data
@@ -286,20 +301,19 @@ class App(customtkinter.CTk):
                 control_signal = self.pid_controller.calculate(set_point, position_data)
                 # print("Position  data: ", position_data)
                 # print("Control signal: ", control_signal)
-
                 # Send the control signal to Arduino
                 self.set_servo_angle(control_signal)
-                if i % 400 == 0:
-                    data = None
+                if i == n:
+                    k = False
                 else:
                     plt.cla()
                     plt.grid()
-                    plt.plot(data)
+                    plt.plot(data, color="red")
                     plt.title("Ball Position vs Sample rate")
                     plt.ylabel("Position (mm)")
                     plt.xlabel("Sample (n)")
                     plt.pause(0.01)
-                i = i + 1
+                    i = i + 1
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
