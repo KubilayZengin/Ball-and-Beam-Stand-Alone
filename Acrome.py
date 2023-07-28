@@ -11,9 +11,6 @@ import PID  # PID class
 import serial.tools.list_ports
 from PIL import Image  # pip install pillow
 
-# Initialize arduino object as None
-arduino = None
-
 # Detect all available COMs
 com_list = serial.tools.list_ports.comports()
 available_coms = []
@@ -34,6 +31,9 @@ Font_tuple_4 = ("Roboto", 12)
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+
+        # Initialize arduino object as None
+        self.arduino = None
 
         # Configure window
         self.title("Acrome Ball and Beam")
@@ -109,9 +109,9 @@ class App(customtkinter.CTk):
         self.start_button.place(x=130, y=575)
 
         self.stop_button = customtkinter.CTkButton(self.frame, text="", width=1, height=1, fg_color="#2B2B2B",
-                                                   bg_color="#2B2B2B", command=self.stop,border_width=0,
+                                                   bg_color="#2B2B2B", command=self.stop, border_width=0,
                                                    image=customtkinter.CTkImage
-                                                       (dark_image=Image.open("images/stop.png"),size=(120, 90)))
+                                                   (dark_image=Image.open("images/stop.png"), size=(120, 90)))
         self.stop_button.pack(padx=10, pady=12)
         self.stop_button.place(x=130, y=670)
 
@@ -232,22 +232,18 @@ class App(customtkinter.CTk):
         print("Program terminated.")
         exit(0)
 
-    @staticmethod
-    def set_com(com_port: str):
+    def set_com(self, com_port: str):
         # Initialize the serial communication between Arduino and Python.
         try:
-            arduino = serial.Serial(com_port, 9600, timeout=1)
-            arduino.write(f"{85}\n".encode())
+            self.arduino = serial.Serial(com_port, 9600, timeout=1)
+            self.arduino.write(30)
             print("Connected to", com_port)
-            return arduino
         except serial.SerialException:
             print("Unable to connect.")
 
-    @staticmethod
-    def set_servo_angle(angle):
-        global arduino
+    def set_servo_angle(self, angle):
         # Convert the angle to a string and send it to Arduino
-        arduino.write(f"{angle}\n".encode())
+        self.arduino.write(f"{angle}\n".encode())
 
     # Real time data plotter function
     def start(self):
@@ -274,10 +270,12 @@ class App(customtkinter.CTk):
         fig, ax = plt.subplots(1, 1)
         # Call set_plot_position function
         self.set_plot_position(fig, 850, 145)
+        i = 0
         while True:
             try:
+
                 # Read serial data
-                byte_data = arduino.readline()
+                byte_data = self.arduino.readline()
                 # Decode byte data
                 byte_data.decode()
                 # Ball position in terms of mm
@@ -285,19 +283,22 @@ class App(customtkinter.CTk):
                 data = np.append(data, position_data)
                 # Calculate the control signal using the PID controller and the analog value as the set point
                 control_signal = pid_controller.calculate(set_point, position_data)
-                print("Position  data: ", position_data)
-                print("Control signal: ", control_signal)
+                # print("Position  data: ", position_data)
+                # print("Control signal: ", control_signal)
 
                 # Send the control signal to Arduino
                 self.set_servo_angle(control_signal)
-
-                plt.cla()
-                plt.grid()
-                plt.plot(data)
-                plt.title("Ball Position vs Sample rate")
-                plt.ylabel("Position (mm)")
-                plt.xlabel("Sample (n)")
-                plt.pause(0.01)
+                if i % 400 == 0:
+                    data = None
+                else:
+                    plt.cla()
+                    plt.grid()
+                    plt.plot(data)
+                    plt.title("Ball Position vs Sample rate")
+                    plt.ylabel("Position (mm)")
+                    plt.xlabel("Sample (n)")
+                    plt.pause(0.01)
+                i = i + 1
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
