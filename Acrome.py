@@ -34,6 +34,7 @@ class App(customtkinter.CTk):
 
         # Initialize arduino object as None
         self.arduino = None
+        self.pid_controller = None
 
         # Configure window
         self.title("Acrome Ball and Beam")
@@ -253,7 +254,7 @@ class App(customtkinter.CTk):
             ki = float(self.entry_4.get())
             kd = float(self.entry_5.get())
             # Initialize the PID controller with appropriate gains
-            pid_controller = PID.PIDController(kp, ki, kd)
+            self.pid_controller = PID.PIDController(kp, ki, kd)
         except ValueError:
             print("Enter any value for PID gains.")
         except UnboundLocalError:
@@ -282,7 +283,7 @@ class App(customtkinter.CTk):
                 position_data = float(byte_data[0:4])
                 data = np.append(data, position_data)
                 # Calculate the control signal using the PID controller and the analog value as the set point
-                control_signal = pid_controller.calculate(set_point, position_data)
+                control_signal = self.pid_controller.calculate(set_point, position_data)
                 # print("Position  data: ", position_data)
                 # print("Control signal: ", control_signal)
 
