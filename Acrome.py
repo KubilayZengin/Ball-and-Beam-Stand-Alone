@@ -28,7 +28,6 @@ else:
 Font_tuple_1 = ("Roboto", 18)
 Font_tuple_2 = ("Roboto", 16)
 Font_tuple_3 = ("Roboto", 14)
-Font_tuple_4 = ("Roboto", 12)
 
 
 class App(customtkinter.CTk):
@@ -57,11 +56,11 @@ class App(customtkinter.CTk):
 
         self.label_4 = customtkinter.CTkLabel(self.frame, text="Sin", font=Font_tuple_3, text_color="white")
         self.label_4.pack(padx=10, pady=12)
-        self.label_4.place(x=180, y=386)
+        self.label_4.place(x=178, y=386)
 
         self.label_5 = customtkinter.CTkLabel(self.frame, text="Ramp", font=Font_tuple_3, text_color="white")
         self.label_5.pack(padx=10, pady=12)
-        self.label_5.place(x=267, y=386)
+        self.label_5.place(x=270, y=386)
 
         self.label_6 = customtkinter.CTkLabel(self.frame, text="Frequency (Hz):", font=Font_tuple_2, text_color="white")
         self.label_6.pack(padx=10, pady=12)
@@ -81,12 +80,12 @@ class App(customtkinter.CTk):
         self.label_9.pack(padx=10, pady=12)
         self.label_9.place(x=150, y=186)
 
-        self.label_10 = customtkinter.CTkLabel(self.frame, text="Serial Ports", font=Font_tuple_2,
+        self.label_10 = customtkinter.CTkLabel(self.frame, text="Serial Ports", font=Font_tuple_3,
                                                text_color="white")
         self.label_10.pack(padx=10, pady=12)
-        self.label_10.place(x=245, y=200)
+        self.label_10.place(x=245, y=205)
 
-        self.label_11 = customtkinter.CTkLabel(self.frame, text="Stop Time", font=Font_tuple_2,
+        self.label_11 = customtkinter.CTkLabel(self.frame, text="Stop Time", font=Font_tuple_3,
                                                text_color="white")
         self.label_11.pack(padx=10, pady=12)
         self.label_11.place(x=245, y=290)
@@ -340,7 +339,6 @@ class App(customtkinter.CTk):
                 print("Error: Unable to convert data.")
                 plt.clf()
             except NameError:
-                # If there's an issue converting data to the appropriate format, handle the error here
                 break
 
 
