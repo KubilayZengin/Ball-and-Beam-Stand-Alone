@@ -1,6 +1,6 @@
 """
-Python 3.7.4
 This source code is designed for Ball and Beam system by Acrome Robotics
+This source code has written in Python 3.7.4
 Author: Kubilay ZENGİN
 """
 # Library installation commands given below
@@ -281,10 +281,10 @@ class App(customtkinter.CTk):
         fig, ax = plt.subplots(1, 1)
         # Call set_plot_position function
         self.set_plot_position(fig, 850, 145)
-        i = 0
+        sample_size = 0
         k = True
         try:
-            n = int(self.entry_9.get())
+            sample_size_selected = int(self.entry_9.get())
         except ValueError:
             print("Enter integer value.")
 
@@ -303,17 +303,18 @@ class App(customtkinter.CTk):
                 # print("Control signal: ", control_signal)
                 # Send the control signal to Arduino
                 self.set_servo_angle(control_signal)
-                if i == n:
+                if sample_size == sample_size_selected:
                     k = False
                 else:
                     plt.cla()
                     plt.grid()
+                    plt.ylim(0, 100)
                     plt.plot(data, color="red")
-                    plt.title("Ball Position vs Sample rate")
+                    plt.title("Ball Position vs Sample Size")
                     plt.ylabel("Position (mm)")
                     plt.xlabel("Sample (n)")
-                    plt.pause(0.01)
-                    i = i + 1
+                    plt.pause(0.001)
+                    sample_size = sample_size + 1
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
