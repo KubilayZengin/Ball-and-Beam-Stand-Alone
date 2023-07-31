@@ -84,10 +84,10 @@ class App(customtkinter.CTk):
         self.label_10.pack(padx=10, pady=12)
         self.label_10.place(x=245, y=510)
 
-        self.label_11 = customtkinter.CTkLabel(self.frame, text="Sample Size", font=Font_tuple_2,
+        self.label_11 = customtkinter.CTkLabel(self.frame, text="Stop Time", font=Font_tuple_2,
                                                text_color="white")
         self.label_11.pack(padx=10, pady=12)
-        self.label_11.place(x=235, y=430)
+        self.label_11.place(x=245, y=430)
 
         # Buttons
         self.button_1 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
@@ -284,7 +284,8 @@ class App(customtkinter.CTk):
         sample_size = 0
         k = True
         try:
-            sample_size_selected = int(self.entry_9.get())
+            time_selected = int(self.entry_9.get())
+            sample_size_selected = time_selected * 30.3
         except ValueError:
             print("Enter integer value.")
 
@@ -303,7 +304,7 @@ class App(customtkinter.CTk):
                 # print("Control signal: ", control_signal)
                 # Send the control signal to Arduino
                 self.set_servo_angle(control_signal)
-                if sample_size == sample_size_selected:
+                if sample_size == int(sample_size_selected):
                     k = False
                 else:
                     plt.cla()
