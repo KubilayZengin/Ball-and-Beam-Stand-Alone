@@ -252,6 +252,7 @@ class App(customtkinter.CTk):
         except serial.SerialException:
             print("Unable to connect.")
 
+
     def set_servo_angle(self, angle):
         # Convert the angle to a string and send it to Arduino
         self.arduino.write(f"{angle}\n".encode())
@@ -287,7 +288,7 @@ class App(customtkinter.CTk):
             time_selected = int(self.entry_9.get())
             sample_size_selected = time_selected * 30.3
         except ValueError:
-            print("Enter integer value.")
+            print("Enter integer value for stop time.")
 
         while k:
             try:
@@ -316,10 +317,12 @@ class App(customtkinter.CTk):
                     plt.xlabel("Sample (n)")
                     plt.pause(0.001)
                     sample_size = sample_size + 1
-
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
                 print("Program terminated.")
+            except AttributeError:
+                print("Select your COM Port.")
+                break
             except serial.SerialException:
                 # Handle SerialException error when opening the port
                 print("Error: Unable to open the serial port. \n"
@@ -331,6 +334,7 @@ class App(customtkinter.CTk):
             except NameError:
                 # If there's an issue converting data to the appropriate format, handle the error here
                 break
+
 
 
 if __name__ == "__main__":
