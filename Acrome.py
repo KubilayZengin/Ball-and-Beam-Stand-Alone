@@ -3,6 +3,8 @@ This source code is designed for Ball and Beam system by Acrome Robotics
 This source code has written in Python 3.7.4
 Author: Kubilay ZENGİN
 """
+import time
+
 # Library installation commands given below
 import customtkinter  # pip install customtkinter
 import serial  # pip install serial
@@ -252,7 +254,6 @@ class App(customtkinter.CTk):
         except serial.SerialException:
             print("Unable to connect.")
 
-
     def set_servo_angle(self, angle):
         # Convert the angle to a string and send it to Arduino
         self.arduino.write(f"{angle}\n".encode())
@@ -276,6 +277,7 @@ class App(customtkinter.CTk):
         set_point = 50.0
         # Create an empty array
         data = np.array([])
+        timestamps = np.array([])
         # Set figure size
         plt.rcParams["figure.figsize"] = (8, 7)
         # Create a subplot with size of 2x1
@@ -286,7 +288,7 @@ class App(customtkinter.CTk):
         k = True
         try:
             time_selected = int(self.entry_9.get())
-            sample_size_selected = time_selected * 30.3
+            real_time = 0
         except ValueError:
             print("Enter integer value for stop time.")
 
@@ -298,24 +300,32 @@ class App(customtkinter.CTk):
                 byte_data.decode()
                 # Ball position in terms of mm
                 position_data = float(byte_data[0:4])
-                data = np.append(data, position_data)
+
                 # Calculate the control signal using the PID controller and the analog value as the set point
                 control_signal = self.pid_controller.calculate(set_point, position_data)
-                # print("Position  data: ", position_data)
-                # print("Control signal: ", control_signal)
                 # Send the control signal to Arduino
                 self.set_servo_angle(control_signal)
-                if sample_size == int(sample_size_selected):
+                # print("sample size: ",sample_size, "selected size: ",time_selected)
+                # Append data and timestamp to arrays
+                data = np.append(data, position_data)
+                timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
+
+                if time_selected <= int(real_time):
                     k = False
+
                 else:
+                    # Calculate real-time seconds for each data point
+                    realtime = timestamps - timestamps[0]
+                    real_time = realtime[-1]
                     plt.cla()
                     plt.grid()
                     plt.ylim(0, 100)
-                    plt.plot(data, color="red")
-                    plt.title("Ball Position vs Sample Size")
+                    plt.plot(realtime, data, color="red")  # Plot data against real-time seconds
+                    plt.title("Ball Position vs Real Time")
                     plt.ylabel("Position (mm)")
-                    plt.xlabel("Sample (n)")
+                    plt.xlabel("Time (s)")
                     plt.pause(0.001)
+
                     sample_size = sample_size + 1
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
@@ -334,7 +344,6 @@ class App(customtkinter.CTk):
             except NameError:
                 # If there's an issue converting data to the appropriate format, handle the error here
                 break
-
 
 
 if __name__ == "__main__":
