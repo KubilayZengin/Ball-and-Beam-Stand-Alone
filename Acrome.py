@@ -264,7 +264,7 @@ class App(customtkinter.CTk):
             kp = float(self.entry_3.get())
             ki = float(self.entry_4.get())
             kd = float(self.entry_5.get())
-            # Initialize the PID controller with appropriate gains
+            # Initialize the PID controller with entered gains
             self.pid_controller = PID.PIDController(kp, ki, kd)
         except ValueError:
             print("Enter any value for PID gains.")
@@ -274,12 +274,13 @@ class App(customtkinter.CTk):
             print("Enter any value for PID gains.")
         # Define the set point (desired position)
         # set_point = 50.0
-        # Create an empty array
+        # Create an empty array for incoming data 
         data = np.array([])
+        # Create an empty array for time stamps
         timestamps = np.array([])
         # Set figure size
         plt.rcParams["figure.figsize"] = (8, 7)
-        # Create a subplot with size of 2x1
+        # Create a subplot with size of 1x1
         fig, ax = plt.subplots(1, 1)
         # Call set_plot_position function
         self.set_plot_position(fig, 850, 145)
@@ -294,7 +295,7 @@ class App(customtkinter.CTk):
             try:
                 # Read serial data
                 byte_data = self.arduino.readline()
-                # Ball position in terms of mm
+                # Read ball position in terms of mm
                 position_data = float(byte_data.decode().strip())
                 '''
                 # Calculate the control signal using the PID controller and the analog value as the set point
@@ -316,14 +317,14 @@ class App(customtkinter.CTk):
                     plt.cla()
                     plt.grid()
                     plt.ylim(0, 90)
-                    plt.plot(realtime, data, color="red")  # Plot data against real-time seconds
+                    plt.plot(realtime, data, color="red")
                     plt.title("Ball Position vs Real Time")
                     plt.ylabel("Position (mm)")
                     plt.xlabel("Time (s)")
                     plt.pause(0.01)
 
             except KeyboardInterrupt:
-                # If the user presses Ctrl+F2, stop the program
+                # If the user presses Ctrl+F2 or manually stops, terminate the program.
                 print("Program terminated.")
             except AttributeError:
                 print("Select your COM Port.")
@@ -334,7 +335,7 @@ class App(customtkinter.CTk):
                 print("Error: Unable to open the serial port. \n"
                       "Check the port number and connection or restart the program.")
             except ValueError:
-                # If there's an issue converting data to the appropriate format, handle the error here
+                # If ValueError occurs, continue to the next iteration to read the next line.
                 continue
             except NameError:
                 break
@@ -347,5 +348,5 @@ if __name__ == "__main__":
         app.set_gui_position()
         app.mainloop()
     except KeyboardInterrupt:
-        # If the user presses Ctrl+F2, stop the program
+        # If the user presses Ctrl+F2 or manually stops, terminate the program.
         print("Program terminated.")
