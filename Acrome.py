@@ -274,7 +274,7 @@ class App(customtkinter.CTk):
             print("Enter any value for PID gains.")
         # Define the set point (desired position)
         # set_point = 50.0
-        # Create an empty array for incoming data 
+        # Create an empty array for incoming data
         data = np.array([])
         # Create an empty array for time stamps
         timestamps = np.array([])
