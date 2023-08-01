@@ -247,7 +247,7 @@ class App(customtkinter.CTk):
     def set_com(self, com_port: str):
         # Initialize the serial communication between Arduino and Python.
         try:
-            self.arduino = serial.Serial(com_port, 9600, timeout=1)
+            self.arduino = serial.Serial(com_port, 9600, timeout=0.05)
             self.arduino.write(30)
             print("Connected to", com_port)
         except serial.SerialException:
@@ -273,7 +273,7 @@ class App(customtkinter.CTk):
         except NameError:
             print("Enter any value for PID gains.")
         # Define the set point (desired position)
-        set_point = 50.0
+        # set_point = 50.0
         # Create an empty array
         data = np.array([])
         timestamps = np.array([])
@@ -283,13 +283,13 @@ class App(customtkinter.CTk):
         fig, ax = plt.subplots(1, 1)
         # Call set_plot_position function
         self.set_plot_position(fig, 850, 145)
-        k = True
+
         try:
             time_selected = int(self.entry_9.get())
             real_time = 0
         except ValueError:
             print("Enter integer value for stop time.")
-
+        k = True
         while k:
             try:
                 # Read serial data
@@ -300,9 +300,9 @@ class App(customtkinter.CTk):
                 position_data = float(byte_data[0:4])
 
                 # Calculate the control signal using the PID controller and the analog value as the set point
-                control_signal = self.pid_controller.calculate(set_point, position_data)
+                # control_signal = self.pid_controller.calculate(set_point, position_data)
                 # Send the control signal to Arduino
-                self.set_servo_angle(control_signal)
+                # self.set_servo_angle(control_signal)
                 # print("sample size: ",sample_size, "selected size: ",time_selected)
                 # Append data and timestamp to arrays
                 data = np.append(data, position_data)
@@ -317,12 +317,12 @@ class App(customtkinter.CTk):
                     real_time = realtime[-1]
                     plt.cla()
                     plt.grid()
-                    plt.ylim(0, 100)
+                    plt.ylim(0, 90)
                     plt.plot(realtime, data, color="red")  # Plot data against real-time seconds
                     plt.title("Ball Position vs Real Time")
                     plt.ylabel("Position (mm)")
                     plt.xlabel("Time (s)")
-                    plt.pause(0.001)
+                    plt.pause(0.01)
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2, stop the program
@@ -336,8 +336,7 @@ class App(customtkinter.CTk):
                       "Check the port number and connection or restart the program.")
             except ValueError:
                 # If there's an issue converting data to the appropriate format, handle the error here
-                print("Error: Unable to convert data.")
-                plt.clf()
+                continue
             except NameError:
                 break
 
