@@ -41,6 +41,7 @@ class App(customtkinter.CTk):
         # Configure window
         self.title("Acrome Ball and Beam")
         self.geometry(f"{500}x{800}")
+        self.iconbitmap("images/acrome_logo.ico")
         self.frame = customtkinter.CTkFrame(self)
         self.frame.pack(pady=20, padx=60, fill="both", expand=True)
         # Labels
