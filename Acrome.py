@@ -294,16 +294,14 @@ class App(customtkinter.CTk):
             try:
                 # Read serial data
                 byte_data = self.arduino.readline()
-                # Decode byte data
-                byte_data.decode()
                 # Ball position in terms of mm
-                position_data = float(byte_data[0:4])
-
+                position_data = float(byte_data.decode().strip())
+                '''
                 # Calculate the control signal using the PID controller and the analog value as the set point
-                # control_signal = self.pid_controller.calculate(set_point, position_data)
+                control_signal = self.pid_controller.calculate(set_point, position_data)
                 # Send the control signal to Arduino
-                # self.set_servo_angle(control_signal)
-                # print("sample size: ",sample_size, "selected size: ",time_selected)
+                self.set_servo_angle(control_signal)
+                '''
                 # Append data and timestamp to arrays
                 data = np.append(data, position_data)
                 timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
@@ -329,6 +327,7 @@ class App(customtkinter.CTk):
                 print("Program terminated.")
             except AttributeError:
                 print("Select your COM Port.")
+                plt.close()
                 break
             except serial.SerialException:
                 # Handle SerialException error when opening the port
