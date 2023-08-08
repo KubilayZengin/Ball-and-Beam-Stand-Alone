@@ -1,18 +1,18 @@
 """
 Python 3.7.4
-This source code is designed for Ball and Beam system by Acrome Robotics
+This source code is designed for Ball and Beam system by ACROME
 Author: Kubilay ZENGİN
 """
 
-# Library installation commands given below
-import customtkinter  # pip install customtkinter
-import serial  # pip install serial
-import numpy as np  # pip install numpy
-import matplotlib.pyplot as plt  # pip install matplotlib
+# Imported libraries
+import customtkinter
+import serial
+import numpy as np
+import matplotlib.pyplot as plt
 import serial.tools.list_ports
-import time  # pip install python-time
-import PID  # PID class
-from PIL import Image  # pip install pillow
+import time
+import PID
+from PIL import Image
 
 # Detect all available COMs
 com_list = serial.tools.list_ports.comports()
@@ -34,16 +34,18 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        # Initialize arduino object as None
+        # Initialize objects as None
         self.arduino = None
         self.pid_controller = None
+        self.time_selected = None
+        self.real_time = None
 
         # Configure window
         self.title("Acrome Ball and Beam")
         self.geometry(f"{500}x{800}")
-        self.iconbitmap("images/acrome_logo.ico")
         self.frame = customtkinter.CTkFrame(self)
         self.frame.pack(pady=20, padx=60, fill="both", expand=True)
+
         # Labels
         self.label_1 = customtkinter.CTkLabel(self.frame, text="",
                                               image=customtkinter.CTkImage(dark_image=Image.open("images/acrome.png"),
@@ -86,10 +88,10 @@ class App(customtkinter.CTk):
         self.label_10.pack(padx=10, pady=12)
         self.label_10.place(x=245, y=205)
 
-        self.label_11 = customtkinter.CTkLabel(self.frame, text="Stop Time", font=Font_tuple_3,
+        self.label_11 = customtkinter.CTkLabel(self.frame, text="Stop Time (s)", font=Font_tuple_3,
                                                text_color="white")
         self.label_11.pack(padx=10, pady=12)
-        self.label_11.place(x=245, y=290)
+        self.label_11.place(x=240, y=290)
 
         # Buttons
         self.button_1 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
@@ -106,7 +108,7 @@ class App(customtkinter.CTk):
 
         self.button_3 = customtkinter.CTkButton(self.frame, text="", width=75, height=75, fg_color="#C41E3A",
                                                 image=customtkinter.CTkImage(dark_image=Image.open("images/ramp.png"),
-                                                                             size=(50, 50)), command=self.step)
+                                                                             size=(50, 50)))
         self.button_3.pack(padx=10, pady=12)
         self.button_3.place(x=250, y=410)
 
@@ -160,6 +162,7 @@ class App(customtkinter.CTk):
         self.entry_9 = customtkinter.CTkEntry(self.frame, placeholder_text="", width=100, font=Font_tuple_3)
         self.entry_9.pack(padx=10, pady=12)
         self.entry_9.place(x=230, y=320)
+
         # Option menu
         self.com_port_menu = customtkinter.CTkOptionMenu(self.frame, values=available_coms, command=self.set_com,
                                                          width=80, fg_color="black", text_color="white",
@@ -266,7 +269,7 @@ class App(customtkinter.CTk):
             ki = float(self.entry_4.get())
             kd = float(self.entry_5.get())
             # Initialize the PID controller with entered gains
-            self.pid_controller = PID.PIDController(kp, ki, kd)
+            self.pid_controller = PID.PIDController(kp, ki, kd, 50)
         except ValueError:
             print("Enter any value for PID gains.")
         except UnboundLocalError:
@@ -287,8 +290,8 @@ class App(customtkinter.CTk):
         self.set_plot_position(fig, 850, 145)
 
         try:
-            time_selected = int(self.entry_9.get())
-            real_time = 0
+            self.time_selected = int(self.entry_9.get())
+            self.real_time = 0
         except ValueError:
             print("Enter integer value for stop time.")
         k = True
@@ -308,13 +311,13 @@ class App(customtkinter.CTk):
                 data = np.append(data, position_data)
                 timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
 
-                if time_selected <= int(real_time):
+                if self.time_selected <= int(self.real_time):
                     k = False
 
                 else:
                     # Calculate real-time seconds for each data point
                     realtime = timestamps - timestamps[0]
-                    real_time = realtime[-1]
+                    self.real_time = realtime[-1]
                     plt.cla()
                     plt.grid()
                     plt.ylim(0, 90)
