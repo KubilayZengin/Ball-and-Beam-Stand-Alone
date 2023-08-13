@@ -1,22 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QMessageBox
 
 import serial.tools.list_ports
 import matplotlib.pyplot as plt
 import numpy as np
 import webbrowser
 import time
-
-# Detect all available COMs
-com_list = serial.tools.list_ports.comports()
-available_coms = []
-if len(com_list) == 0:
-    available_coms.append("None")
-    print("No available COM port detected.")
-else:
-    for element in com_list:
-        available_coms.append(element.device)
-
 
 class Ui_BallandBeam(object):
     def setupUi(self, BallandBeam):
@@ -262,6 +252,21 @@ class Ui_BallandBeam(object):
         # Button functions
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
+
+        # Detect all available COMs
+        com_list = serial.tools.list_ports.comports()
+        available_coms = []
+        if len(com_list) == 0:
+            available_coms.append("None")
+            msg = QMessageBox()
+            msg.setWindowTitle("Warning")
+            msg.setText("No available COM port detected.\n Check USB connection.")
+            # Parameters: Critical Warning Information Question
+            msg.setIcon(QMessageBox.Warning)
+            x = msg.exec_()
+        else:
+            for element in com_list:
+                available_coms.append(element.device)
 
         for i in available_coms:
             self.menuTool.addAction(i)
