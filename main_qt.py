@@ -152,6 +152,7 @@ class Ui_BallandBeam(object):
         self.actionVisit_Acrome_com.triggered.connect(lambda: self.website('https://acrome.net/'))
         self.actionPrivacy_Policy = QtWidgets.QAction(BallandBeam)
         self.actionPrivacy_Policy.setObjectName("actionPrivacy_Policy")
+        self.actionPrivacy_Policy.triggered.connect(lambda: self.website('https://acrome.net/privacy-policy'))
         self.actionProduct_Page = QtWidgets.QAction(BallandBeam)
         self.actionProduct_Page.setObjectName("actionProduct_Page")
         self.actionProduct_Page.triggered.connect(lambda: self.website('https://acrome.net/product/ball-and-beam'))
@@ -279,6 +280,7 @@ class Ui_BallandBeam(object):
         self.actionSelect_All.setShortcut(_translate("BallandBeam", "Ctrl+A"))
         self.actionClose.setText(_translate("BallandBeam", "Quit"))
         self.actionClose.setShortcut(_translate("BallandBeam", "Ctrl+Q"))
+        self.actionClose.triggered.connect(self.stop)
         self.actionSave.setText(_translate("BallandBeam", "Save"))
         self.actionSave.setShortcut(_translate("BallandBeam", "Ctrl+S"))
         self.actionSave_As.setText(_translate("BallandBeam", "Save As..."))
@@ -303,7 +305,7 @@ class Ui_BallandBeam(object):
         available_coms = []
         if len(com_list) == 0:
             available_coms.append("None")
-            self.message("No available COM port detected.\n Check USB connection.",QMessageBox.Warning)
+            self.message("No available COM port detected.\n Check USB connection.", QMessageBox.Warning)
         else:
             for element in com_list:
                 available_coms.append(element.device)
@@ -381,7 +383,7 @@ class Ui_BallandBeam(object):
             self.time_selected = float(self.lineEdit_11.text())
             self.real_time = 0
         except ValueError:
-            self.message("Enter valid value for the stop time.",QMessageBox.Critical)
+            self.message("Enter valid value for the stop time.", QMessageBox.Critical)
         k = True
         while k:
             try:
@@ -417,15 +419,15 @@ class Ui_BallandBeam(object):
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2 or manually stops, terminate the program.
-                self.message("Program terminated.",QMessageBox.Information)
+                self.message("Program terminated.", QMessageBox.Information)
             except AttributeError:
-                self.message("Select your COM Port.",QMessageBox.Critical)
+                self.message("Select your COM Port.", QMessageBox.Critical)
                 plt.close()
                 break
             except serial.SerialException:
                 # Handle SerialException error when opening the port
                 self.message("Error: Unable to open the serial port. \n"
-                      "Check the port number and connection or restart the program.",QMessageBox.Warning)
+                             "Check the port number and connection or restart the program.", QMessageBox.Warning)
             except ValueError:
                 # If ValueError occurs, continue to the next iteration to read the next line.
                 continue
