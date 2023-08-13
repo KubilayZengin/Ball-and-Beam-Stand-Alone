@@ -8,10 +8,11 @@ import numpy as np
 import webbrowser
 import time
 
+
 class Ui_BallandBeam(object):
     def setupUi(self, BallandBeam):
         BallandBeam.setObjectName("BallandBeam")
-        BallandBeam.resize(500, 850)
+        BallandBeam.resize(500, 880)
         self.centralwidget = QtWidgets.QWidget(BallandBeam)
         self.centralwidget.setObjectName("centralwidget")
         self.acrome_label = QtWidgets.QLabel(self.centralwidget)
@@ -302,17 +303,13 @@ class Ui_BallandBeam(object):
         available_coms = []
         if len(com_list) == 0:
             available_coms.append("None")
-            msg = QMessageBox()
-            msg.setWindowTitle("Warning")
-            msg.setText("No available COM port detected.\n Check USB connection.")
-            # Parameters: Critical Warning Information Question
-            msg.setIcon(QMessageBox.Warning)
-            x = msg.exec_()
+            self.message("No available COM port detected.\n Check USB connection.",QMessageBox.Warning)
         else:
             for element in com_list:
                 available_coms.append(element.device)
 
         for i in available_coms:
+            # Add available COMs to ports menu bar.
             self.menuTool.addAction(i)
 
         # Image assignments
@@ -384,7 +381,7 @@ class Ui_BallandBeam(object):
             self.time_selected = float(self.lineEdit_11.text())
             self.real_time = 0
         except ValueError:
-            print("Enter valid value for the stop time.")
+            self.message("Enter valid value for the stop time.",QMessageBox.Critical)
         k = True
         while k:
             try:
@@ -420,15 +417,15 @@ class Ui_BallandBeam(object):
 
             except KeyboardInterrupt:
                 # If the user presses Ctrl+F2 or manually stops, terminate the program.
-                print("Program terminated.")
+                self.message("Program terminated.",QMessageBox.Information)
             except AttributeError:
-                print("Select your COM Port.")
+                self.message("Select your COM Port.",QMessageBox.Critical)
                 plt.close()
                 break
             except serial.SerialException:
                 # Handle SerialException error when opening the port
-                print("Error: Unable to open the serial port. \n"
-                      "Check the port number and connection or restart the program.")
+                self.message("Error: Unable to open the serial port. \n"
+                      "Check the port number and connection or restart the program.",QMessageBox.Warning)
             except ValueError:
                 # If ValueError occurs, continue to the next iteration to read the next line.
                 continue
@@ -438,6 +435,14 @@ class Ui_BallandBeam(object):
     def website(self, i):
         webbrowser.open(i)
 
+    def message(self, i, type):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention")
+        msg.setText(i)
+        # Parameters: Critical Warning Information Question
+        msg.setIcon(type)
+        x = msg.exec_()
+
     def set_com(self):
         # Initialize the serial communication between Arduino and Python.
         try:
@@ -446,7 +451,7 @@ class Ui_BallandBeam(object):
             self.arduino.write(30)
             print("Connected to", self.actionPorts.text())
         except serial.SerialException:
-            print("Unable to connect.")
+            self.message("Unable to connect.", QMessageBox.Critical)
 
     # Plot starting coordinates function
     @staticmethod
@@ -461,7 +466,7 @@ class Ui_BallandBeam(object):
             f.canvas.manager.window.move(x, y)
 
     def stop(self):
-        print("Program Terminated.")
+        self.message("Program Terminated.", QMessageBox.Information)
         exit(0)
 
 
