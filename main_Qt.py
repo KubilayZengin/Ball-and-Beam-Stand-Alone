@@ -443,7 +443,6 @@ class Ui_MainWindow(object):
             # Save actions to use later
             action.triggered.connect(lambda _, port=i: self.port_selected(port))
 
-
         # Image assignments
         pixmap = QPixmap("images/start.png")
         pixmap2 = QPixmap("images/stop.png")
@@ -514,6 +513,7 @@ class Ui_MainWindow(object):
         except ValueError:
             self.message("Enter valid value for the stop time.", QMessageBox.Critical)
         k = True
+
         while k:
             try:
                 # Read serial data
@@ -530,7 +530,7 @@ class Ui_MainWindow(object):
                 data = np.append(data, position_data)
                 timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
 
-                if self.time_selected <= int(self.real_time):
+                if self.time_selected <= float(self.real_time):
                     k = False
 
                 else:
@@ -585,7 +585,7 @@ class Ui_MainWindow(object):
             self.arduino = serial.Serial(self.selected_port, 9600, timeout=0.05)
             # Move servo to initial position
             self.arduino.write(30)
-            self.message("Connected to "+self.selected_port, QMessageBox.Information)
+            self.message("Connected to " + self.selected_port, QMessageBox.Information)
         except serial.SerialException:
             self.message("Unable to connect.", QMessageBox.Critical)
 
