@@ -3,7 +3,7 @@ Ball-and-Beam.ino
 Acrome Ball and Beam Stand Alone Source Code
   (https://acrome.net/product/ball-and-beam)
 Kubilay Zengin
-July 18, 2023
+Aug 17, 2023
 ******************************************************************************/
 #include <Servo.h>
 
@@ -30,7 +30,8 @@ void loop()
     }
 
     float softPotAnalog = analogRead(SOFT_POT_PIN);
-    float softPotVoltage = softPotAnalog * (4.74 / 951.0);
-    Serial.println(softPotVoltage);
+    float softPotVoltage = softPotAnalog * (4.74 / 993.0);
+    float softPotPosition = softPotAnalog * (90 / 993.0);
+    Serial.println(softPotPosition);
     delay(100);
 }
