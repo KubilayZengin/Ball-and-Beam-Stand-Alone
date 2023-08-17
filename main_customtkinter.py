@@ -6,9 +6,9 @@ Author: Kubilay ZENGİN
 
 # Imported libraries
 import customtkinter
-import serial
 import numpy as np
 import matplotlib.pyplot as plt
+import serial
 import serial.tools.list_ports
 import time
 import PID
@@ -269,7 +269,7 @@ class App(customtkinter.CTk):
             ki = float(self.entry_4.get())
             kd = float(self.entry_5.get())
             # Initialize the PID controller with entered gains
-            self.pid_controller = PID.PIDController(kp, ki, kd, 50)
+            self.pid_controller = PID.PIDController(kp, ki, kd)
         except ValueError:
             print("Enter any value for PID gains.")
         except UnboundLocalError:
@@ -290,7 +290,7 @@ class App(customtkinter.CTk):
         self.set_plot_position(fig, 850, 145)
 
         try:
-            self.time_selected = int(self.entry_9.get())
+            self.time_selected = float(self.entry_9.get())
             self.real_time = 0
         except ValueError:
             print("Enter integer value for stop time.")
@@ -311,7 +311,7 @@ class App(customtkinter.CTk):
                 data = np.append(data, position_data)
                 timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
 
-                if self.time_selected <= int(self.real_time):
+                if self.time_selected <= float(self.real_time):
                     k = False
 
                 else:
