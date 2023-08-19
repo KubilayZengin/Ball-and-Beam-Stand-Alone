@@ -2,13 +2,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 
+import sys
 import serial.tools.list_ports
 import matplotlib.pyplot as plt
 import numpy as np
 import webbrowser
 import time
 
-
+# Ana pencere arayüzü sınıfı
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -288,6 +289,7 @@ class Ui_MainWindow(object):
                                        "background-color: rgba(115,210,22,255);\n"
                                        "border-radius: 62px;\n"
                                        "}\n"
+                                       "QPushButton:pressed {background: rgb(42, 108, 2);}"
                                        "        ")
         self.startButton.setText("")
         self.startButton.setCheckable(True)
@@ -310,6 +312,7 @@ class Ui_MainWindow(object):
                                       "background-color: rgb(224, 27, 36);\n"
                                       "border-radius: 62px;\n"
                                       "}\n"
+                                      "QPushButton:pressed {background: rgb(128, 27, 36);}"
                                       "        \n"
                                       "")
         self.stopButton.setText("")
@@ -422,11 +425,11 @@ class Ui_MainWindow(object):
         self.actionAbout_Acrome.setText(_translate("MainWindow", "About Acrome"))
         self.actionAbout_Acrome.setStatusTip(_translate("MainWindow", "Visit About Acrome Page"))
 
-        # Button functions
+        # Button fonksiyonlarını bağla
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
 
-        # Detect all available COMs
+        # Kullanılabilir COM portlarını bul
         com_list = serial.tools.list_ports.comports()
         available_coms = []
 
@@ -438,12 +441,12 @@ class Ui_MainWindow(object):
                 available_coms.append(element.device)
 
         for i in available_coms:
-            # Add available COMs to ports menu bar.
+            # Kullanılabilir COM'ları menü çubuğuna ekle
             action = self.menuPorts.addAction(i)
-            # Save actions to use later
+            # Daha sonra kullanmak üzere işlemleri kaydet
             action.triggered.connect(lambda _, port=i: self.port_selected(port))
 
-        # Image assignments
+        # Resim atamaları
         pixmap = QPixmap("images/start.png")
         pixmap2 = QPixmap("images/stop.png")
         pixmap3 = QPixmap("images/step.png")
@@ -477,9 +480,9 @@ class Ui_MainWindow(object):
         self.pushButton_4.setIcon(icon5)
         self.pushButton_4.setIconSize(pixmap5.size())
 
-    # Real time data plotter function
+    # Gerçek zamanlı veri çizici fonksiyon
     def start(self):
-        # Check whether the PID input is empty
+        # PID girişinin boş olup olmadığını kontrol et
         '''
         try:
             kp = float(self.entry_3.get())
@@ -494,17 +497,17 @@ class Ui_MainWindow(object):
         except NameError:
             print("Enter any value for PID gains.")
         '''
-        # Define the set point (desired position)
+        # İstenen pozisyonu belirle (set_point)
         # set_point = 50.0
-        # Create an empty array for incoming data
+        # Gelen veri için boş bir dizi oluştur
         data = np.array([])
-        # Create an empty array for time stamps
+        # Zaman damgaları için boş bir dizi oluştur
         timestamps = np.array([])
-        # Set figure size
+        # Figür boyutunu ayarla
         plt.rcParams["figure.figsize"] = (8, 7)
-        # Create a subplot with size of 1x1
+        # 1x1 boyutunda bir subplot oluştur
         fig, ax = plt.subplots(1, 1)
-        # Call set_plot_position function
+        # Grafiğin konumunu ayarla
         self.set_plot_position(fig, 850, 145)
 
         try:
@@ -516,9 +519,9 @@ class Ui_MainWindow(object):
 
         while k:
             try:
-                # Read serial data
+                # Gelen byte cinsinden seri veriyi oku
                 byte_data = self.arduino.readline()
-                # Read ball position in terms of mm
+                # Gelen veriyi decode et
                 position_data = float(byte_data.decode().strip())
                 '''
                     # Calculate the control signal using the PID controller and the analog value as the set point
@@ -526,15 +529,14 @@ class Ui_MainWindow(object):
                     # Send the control signal to Arduino
                     self.set_servo_angle(control_signal)
                 '''
-                # Append data and timestamp to arrays
+                # Yeni bilgileri veri ve zaman dizilerine ekle
                 data = np.append(data, position_data)
-                timestamps = np.append(timestamps, time.time())  # Add the current time as the x-coordinate
+                timestamps = np.append(timestamps, time.time())
 
                 if self.time_selected <= float(self.real_time):
                     k = False
 
                 else:
-                    # Calculate real-time seconds for each data point
                     realtime = timestamps - timestamps[0]
                     self.real_time = realtime[-1]
                     plt.cla()
@@ -547,18 +549,18 @@ class Ui_MainWindow(object):
                     plt.pause(0.01)
 
             except KeyboardInterrupt:
-                # If the user presses Ctrl+F2 or manually stops, terminate the program.
+                # Ctrl+F2'ye basılırsa veya manuel olarak durdurulursa programı sonlandır
                 self.message("Program terminated.", QMessageBox.Information)
             except AttributeError:
                 self.message("Select your COM Port.", QMessageBox.Critical)
                 plt.close()
                 break
             except serial.SerialException:
-                # Handle SerialException error when opening the port
+                # Bağlantı hatası durumunda SerialException hatasını işle
                 self.message("Error: Unable to open the serial port. \n"
                              "Check the port number and connection or restart the program.", QMessageBox.Warning)
             except ValueError:
-                # If ValueError occurs, continue to the next iteration to read the next line.
+                # ValueError oluşursa, bir sonraki yinelemeye geçmeye devam et
                 continue
             except NameError:
                 break
@@ -570,29 +572,29 @@ class Ui_MainWindow(object):
         msg = QMessageBox()
         msg.setWindowTitle("Attention")
         msg.setText(i)
-        # Parameters: Critical Warning Information Question
+        # Parametreler: Critical, Warning, Information, Question
         msg.setIcon(type)
         x = msg.exec_()
 
     def port_selected(self, port):
         self.selected_port = port
-        # Call set.com() function to initialize serial communication
+        # Seri haberleşmeyi başlatmak için set.com() fonksiyonunu çağır
         self.set_com()
 
     def set_com(self):
-        # Initialize the serial communication between Arduino and Python.
+        # Arduino ve Python arasında seri haberleşmeyi başlat
         try:
             self.arduino = serial.Serial(self.selected_port, 9600, timeout=0.05)
-            # Move servo to initial position
+            # Servoyu ilk pozisyona götür
             self.arduino.write(30)
             self.message("Connected to " + self.selected_port, QMessageBox.Information)
         except serial.SerialException:
             self.message("Unable to connect.", QMessageBox.Critical)
 
-    # Plot starting coordinates function
+    # Grafik konum belirleme fonksiyonu
     @staticmethod
     def set_plot_position(f, x, y):
-        # Move figure's upper left corner to pixel (x, y)
+        # Figürün sol üst köşesini (x, y) pikseline götür
         backend = plt.get_backend()
         if backend == 'TkAgg':
             f.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
@@ -604,7 +606,8 @@ class Ui_MainWindow(object):
     '''
     def align_left(self):
         frame_geometry = MainWindow.frameGeometry()
-        frame_geometry.moveLeft(200)  # Burada 100 değeri istediğiniz kaydırma miktarını temsil eder
+        # Burada *** değeri istediğiniz kaydırma miktarını temsil eder
+        frame_geometry.moveLeft(200)  
         frame_geometry.moveTop(100)
         MainWindow.move(frame_geometry.topLeft())
     '''
@@ -615,8 +618,6 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
-    import sys
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
